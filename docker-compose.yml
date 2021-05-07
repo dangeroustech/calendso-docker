@@ -1,0 +1,30 @@
+version: "3.7"
+services:
+  db:
+    image: postgres:13.2
+    environment:
+      POSTGRES_USER: calendso
+      POSTGRES_PASSWORD: calendso
+    networks:
+      - backend
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  ui:
+    build: .
+    environment:
+      DATABASE_URL: 'postgresql://calendso:calendso@db:5432'
+      GOOGLE_API_CREDENTIALS: 'GOOGLE_API_CREDENTIALS'
+    depends_on:
+      - db
+    networks:
+      - backend
+      - traefik_proxy
+
+networks:
+    backend:
+    traefik_proxy:
+        external: true
+
+volumes:
+  db:
